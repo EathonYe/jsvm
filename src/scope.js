@@ -3,6 +3,16 @@ class Scope {
     this.parent = parent;
     this.variableObject = {};
     this.level = 0;
+    this.context = null;
+  }
+
+  setContext(context) {
+    this.context = context;
+    for (let key in context) {
+      if (!Reflect.has(this.variableObject, key)) {
+        this.variableObject[key] = context[key];
+      }
+    }
   }
 
   createChild() {
@@ -21,6 +31,16 @@ class Scope {
 
   const(key, value) {
     this.var(key, value);
+  }
+
+  get(key) {
+    if (this.variableObject[key]) {
+      return this.variableObject[key];
+    } else if (this.parent) {
+      return this.parent.get(key);
+    } else {
+      throw new ReferenceError(`${key} is not defined.`);
+    }
   }
 }
 

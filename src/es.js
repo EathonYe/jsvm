@@ -32,6 +32,16 @@ const ESMap = {
   ExpressionStatement(path) {
     return path.evaluate(path.createChild(path.node.expression));
   },
+  CallExpression(path) {
+    const func = path.evaluate(path.createChild(path.node.callee));
+    const args = path.node.arguments.map((arg) =>
+      path.evaluate(path.createChild(arg))
+    );
+    return func.apply(null, args);
+  },
+  Identifier(path) {
+    return path.scope.get(path.node.value);
+  },
 };
 
 exports.ESMap = ESMap;
