@@ -21,9 +21,13 @@ async function run(code, context) {
 exports.run = run;
 
 (async () => {
-  const code = `
+	const code = `
+	function add(a, b) {
+		return a + b;
+	}
 	let x = 2 ** 3;
 	console.log(x);
+	console.log(add(1, 2));
 	`;
   // const ast = await parse(code, { isModule: false });
 
