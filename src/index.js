@@ -21,12 +21,15 @@ async function run(code, context) {
 exports.run = run;
 
 (async () => {
-  const code = `let x = 2 ** 3;show(x);`;
+  const code = `
+	let x = 2 ** 3;
+	console.log(x);
+	`;
   // const ast = await parse(code, { isModule: false });
 
   // console.log(JSON.stringify(ast));
   const context = {
-    show: console.log,
+    console,
   };
   await run(code, context);
 })();

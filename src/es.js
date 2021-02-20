@@ -42,6 +42,17 @@ const ESMap = {
   Identifier(path) {
     return path.scope.get(path.node.value);
   },
+  MemberExpression(path) {
+    const object = path.scope.get(path.node.object.value);
+    if (path.node.computed) {
+      return path.evaluate(path.createChild(path.node.object))[
+        path.evaluate(path.createChild(path.node.property))
+      ];
+    }
+    return path.evaluate(path.createChild(path.node.object))[
+      path.node.property.value
+    ];
+  },
 };
 
 exports.ESMap = ESMap;
