@@ -10,7 +10,7 @@ function evaluate(path) {
   return ESMap[path.node.type](path);
 }
 
-async function run(code, context) {
+async function run(code, context = {}) {
   const ast = await parse(code);
   const scope = new Scope();
   scope.type = ScopeType.ROOT;
@@ -25,21 +25,18 @@ async function run(code, context) {
 
 exports.run = run;
 
-(async () => {
-  const code = `
-	function add(a, b) {
-		return a + b;
-	}
-	let x = 2 ** 3;
-	console.log(x);
-	console.log(add(1, 2));
-  module.exports = x;
-	`;
-  // const ast = await parse(code, { isModule: false });
-
-  // console.log(JSON.stringify(ast));
-  const context = {
-    console,
-  };
-  await run(code, context);
-})();
+// (async () => {
+//   const code = `
+// 	function add(a, b) {
+// 		return a + b;
+// 	}
+// 	let x = 2 ** 3;
+// 	console.log(x);
+// 	console.log(add(1, 2));
+//   module.exports = x;
+// 	`;
+//   const context = {
+//     console,
+//   };
+//   await run(code, context);
+// })();
