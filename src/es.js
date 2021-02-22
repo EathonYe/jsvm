@@ -1,3 +1,5 @@
+const { ScopeType } = require("./scope");
+
 const BinaryExpressionOperatorEvaluateMap = {
   "**": (a, b) => Math.pow(a, b),
   "+": (a, b) => a + b,
@@ -60,7 +62,7 @@ const ESMap = {
   FunctionExpression(path) {
     return function (...args) {
       // create function scope
-      const newPath = path.createChild(path.node, "function");
+      const newPath = path.createChild(path.node, ScopeType.FUNCTION);
       for (let i = 0; i < path.node.params.length; i++) {
         newPath.scope.const(
           path.evaluate(path.createChild(path.node.params[i])),
@@ -75,7 +77,7 @@ const ESMap = {
   BlockStatement(path) {
     for (let i = 0; i < path.node.stmts.length; i++) {
       const result = path.evaluate(
-        path.createChild(path.node.stmts[i], "block")
+        path.createChild(path.node.stmts[i], ScopeType.BLOCK)
       );
       if (path.node.stmts[i].type === "ReturnStatement") {
         return result;

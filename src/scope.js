@@ -1,8 +1,15 @@
+const ScopeType = {
+  ROOT: "root",
+  FUNCTION: "function",
+  BLOCK: "block",
+};
+
 class Scope {
   constructor(parent) {
     this.parent = parent;
     this.variableObject = {};
     this.level = 0;
+    this.type = null;
     this.context = null;
   }
 
@@ -15,8 +22,9 @@ class Scope {
     }
   }
 
-  createChild() {
+  createChild(scopeType) {
     const childScope = new Scope(this);
+    childScope.type = scopeType;
     childScope.level = this.level + 1;
     return childScope;
   }
@@ -44,4 +52,5 @@ class Scope {
   }
 }
 
+exports.ScopeType = ScopeType;
 exports.Scope = Scope;

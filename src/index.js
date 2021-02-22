@@ -1,5 +1,5 @@
 const { parse } = require("@swc/core");
-const { Scope } = require("./scope");
+const { Scope, ScopeType } = require("./scope");
 const { ESMap } = require("./es");
 const { Path } = require("./path");
 
@@ -14,6 +14,7 @@ async function run(code, context) {
   const ast = await parse(code);
   const scope = new Scope();
   scope.setContext(context);
+  scope.type = ScopeType.ROOT;
   const path = new Path(ast, null, scope, evaluate);
   evaluate(path);
 }
@@ -21,7 +22,7 @@ async function run(code, context) {
 exports.run = run;
 
 (async () => {
-	const code = `
+  const code = `
 	function add(a, b) {
 		return a + b;
 	}
