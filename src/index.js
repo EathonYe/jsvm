@@ -13,10 +13,14 @@ function evaluate(path) {
 async function run(code, context) {
   const ast = await parse(code);
   const scope = new Scope();
-  scope.setContext(context);
   scope.type = ScopeType.ROOT;
+  scope.const("module", { exports: {} });
+  scope.setContext(context);
   const path = new Path(ast, null, scope, evaluate);
   evaluate(path);
+
+  const module = scope.get("module");
+  return module ? module.exports : undefined;
 }
 
 exports.run = run;
@@ -29,6 +33,7 @@ exports.run = run;
 	let x = 2 ** 3;
 	console.log(x);
 	console.log(add(1, 2));
+  module.exports = x;
 	`;
   // const ast = await parse(code, { isModule: false });
 

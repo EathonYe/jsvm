@@ -5,6 +5,13 @@ const BinaryExpressionOperatorEvaluateMap = {
   "+": (a, b) => a + b,
 };
 
+const AssignmentExpressionEvaluateMap = {
+  "=": ($var, v) => {
+    $var.set(v);
+    return v;
+  },
+};
+
 const ESMap = {
   Module(path) {
     for (let declaration of path.node.body) {
@@ -89,6 +96,36 @@ const ESMap = {
   },
   Parameter(path) {
     return path.node.pat.value;
+  },
+  AssignmentExpression(path) {
+    const rightValue = path.evaluate(path.createChild(path.node.right));
+    let $var;
+    if (path.node.left.type === "Identifier") {
+      const key = path.scope.get(path.node.left.value);
+      $var = {
+        get() {
+          return path.evaluate(path.createChild(path.node.left));
+        },
+        set(val) {
+          path.scope.var(key, val);
+        },
+      };
+    } else if (path.node.left.type === "MemberExpression") {
+      $var = {
+        get() {
+          return path.evaluate(path.createChild(path.node.left));
+        },
+        set(val) {
+          const object = path.evaluate(path.createChild(path.node.left.object));
+          const key = path.node.left.property.value;
+          object[key] = val;
+        },
+      };
+    }
+    return AssignmentExpressionEvaluateMap[path.node.operator](
+      $var,
+      rightValue
+    );
   },
 };
 
